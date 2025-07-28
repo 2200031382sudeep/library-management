@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Management</title>
+    <script>
+        async function loadBooks() {
+            const response = await fetch('/api/books');
+            const books = await response.json();
+            const list = document.getElementById('bookList');
+            list.innerHTML = '';
+            books.forEach(book => {
+                const li = document.createElement('li');
+                li.textContent = `${book.id}. ${book.title} by ${book.author}`;
+                list.appendChild(li);
+            });
+        }
+
+        async function addBook() {
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+
+            await fetch('/api/books', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, author })
+            });
+
+            document.getElementById('title').value = '';
+            document.getElementById('author').value = '';
+            loadBooks();
+        }
+
+        window.onload = loadBooks;
+    </script>
+</head>
+<body>
+    <h1>Library Management</h1>
+    <input id="title" placeholder="Book Title">
+    <input id="author" placeholder="Author">
+    <button onclick="addBook()">Add Book</button>
+    <ul id="bookList"></ul>
+</body>
+</html>
